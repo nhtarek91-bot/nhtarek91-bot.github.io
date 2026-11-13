@@ -1,4 +1,4 @@
-﻿const key = 'najmul-portfolio-updates-v1';
+const key = 'najmul-portfolio-updates-v1';
 const form = document.querySelector('#log-form');
 const entries = document.querySelector('#entries');
 const notice = document.querySelector('#notice');
@@ -23,6 +23,7 @@ function render() {
     notice.textContent = 'Could not read saved updates. Check browser storage settings or import a valid backup.';
     return;
   }
+  renderSavedProjects(all);
   entries.replaceChildren();
   for (const [index, item] of all.entries()) {
     const card = document.createElement('article');
@@ -127,7 +128,6 @@ window.addEventListener('storage', event => {
   if (event.key === key || event.key === null) render();
 });
 
-render();
 
 // Responsive navigation keeps every section reachable on smaller screens.
 const menuToggle = document.querySelector('.menu-toggle');
@@ -157,7 +157,7 @@ document.addEventListener('click', event => {
 });
 window.matchMedia('(min-width: 851px)').addEventListener('change', closeMenu);
 
-const projectCards = [...document.querySelectorAll('[data-project]')];
+const getProjectCards = () => [...document.querySelectorAll('.project-grid [data-project]')];
 const projectDialog = document.querySelector('#project-dialog');
 const passwordDemo = document.querySelector('#password-demo');
 const passwordInput = document.querySelector('#demo-password');
@@ -177,7 +177,7 @@ function resetPasswordDemo() {
   passwordMeter.value = 0;
   passwordFeedback.textContent = 'Type an example to explore its strength.';
 }
-for (const card of projectCards) {
+function initialiseProjectCard(card) {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'project-open';
@@ -192,7 +192,7 @@ for (const card of projectCards) {
     document.querySelector('#dialog-tags').replaceChildren(...[...card.querySelectorAll('.tags span')].map(tag => tag.cloneNode(true)));
     const context = document.querySelector('#project-context');
     context.replaceChildren();
-    projectNotes[card.dataset.project].forEach((text, index) => {
+    (projectNotes[card.dataset.project] || ['Project details', card.querySelector('.project-info p').textContent]).forEach((text, index) => {
       const element = document.createElement(index % 2 === 0 ? 'h3' : 'p');
       element.textContent = text;
       context.append(element);
@@ -213,13 +213,58 @@ projectDialog.addEventListener('close', () => {
 });
 document.querySelector('#dialog-contact').addEventListener('click', () => projectDialog.close());
 
+function applyProjectFilter() {
+  const cards = getProjectCards();
+  const active = document.querySelector('[data-filter][aria-pressed="true"]');
+  const filter = active ? active.dataset.filter : 'all';
+  cards.forEach(card => {
+    card.hidden = filter !== 'all' && card.dataset.category !== filter;
+  });
+  document.querySelector('[data-filter="all"] span').textContent = String(cards.length).padStart(2, '0');
+  document.querySelector('#project-count').textContent = `Showing ${cards.filter(card => !card.hidden).length} projects`;
+}
+
+function renderSavedProjects(all) {
+  const grid = document.querySelector('.project-grid');
+  grid.querySelectorAll('[data-saved-project]').forEach(card => card.remove());
+  const template = grid.querySelector('[data-project="eventify"]');
+  all.filter(item => item.type === 'Project').forEach((item, index) => {
+    const card = template.cloneNode(true);
+    card.dataset.project = 'saved';
+    card.dataset.savedProject = 'true';
+    card.dataset.category = 'other';
+    card.hidden = false;
+    card.querySelector('.project-open')?.remove();
+    const visual = card.querySelector('.project-visual');
+    visual.replaceChildren();
+    const top = document.createElement('div');
+    top.className = 'visual-top';
+    const number = document.createElement('span');
+    number.textContent = `PROJECT ${String(index + 4).padStart(2, '0')}`;
+    const date = document.createElement('span');
+    date.textContent = item.date;
+    top.append(number, date);
+    const symbol = document.createElement('div');
+    symbol.className = 'proxy-diagram';
+    symbol.textContent = '{ }';
+    visual.append(top, symbol);
+    card.querySelector('.project-type').textContent = 'PROJECT';
+    card.querySelector('h3').textContent = item.title;
+    card.querySelector('.project-info p').textContent = item.detail;
+    const tag = document.createElement('span');
+    tag.textContent = 'Project';
+    card.querySelector('.tags').replaceChildren(tag);
+    initialiseProjectCard(card);
+    grid.append(card);
+  });
+  applyProjectFilter();
+}
+
+getProjectCards().forEach(initialiseProjectCard);
 for (const button of document.querySelectorAll('[data-filter]')) {
   button.addEventListener('click', () => {
     document.querySelectorAll('[data-filter]').forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
-    projectCards.forEach(card => {
-      card.hidden = button.dataset.filter !== 'all' && card.dataset.category !== button.dataset.filter;
-    });
-    document.querySelector('#project-count').textContent = `Showing ${projectCards.filter(card => !card.hidden).length} projects`;
+    applyProjectFilter();
   });
 }
 passwordToggle.addEventListener('click', () => {
@@ -301,3 +346,7 @@ if (window.location.protocol === 'file:') {
   journeyEditor.hidden = false;
   journeyEditor.closest('.journey-layout').classList.add('has-local-editor');
 }
+
+// Render saved entries after project controls have been initialised.
+
+render();
