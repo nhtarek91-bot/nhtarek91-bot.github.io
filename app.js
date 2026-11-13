@@ -195,6 +195,18 @@ const passwordToggle = document.querySelector("#toggle-password");
 const passwordMeter = document.querySelector("#password-meter");
 const passwordFeedback = document.querySelector("#password-feedback");
 const projectNotes = {
+  property: [
+    "Academic desktop project",
+    "Built with Python, Tkinter and ttk to browse and manage commercial property listings through a desktop interface.",
+    "Listings and search",
+    "Displays listings in a table and filters by property type, number of floors, and lease or purchase availability.",
+    "Administrator workflow",
+    "Logged-in administrators can add property listings and create administrator accounts.",
+    "Input validation",
+    "Validates numeric inputs and prevents duplicate property IDs.",
+    "CSV storage and reports",
+    "Saves records in CSV files and generates a text report containing the search criteria and matching results.",
+  ],
   proxy: [
     "The idea",
     "Explore how a Flask middleware layer can inspect incoming requests for suspicious patterns before they reach an application.",
@@ -322,7 +334,7 @@ function renderSavedProjects(all) {
       const top = document.createElement("div");
       top.className = "visual-top";
       const number = document.createElement("span");
-      number.textContent = `PROJECT ${String(index + 4).padStart(2, "0")}`;
+      number.textContent = `PROJECT ${String(index + grid.querySelectorAll("[data-project]:not([data-saved-project])").length + 1).padStart(2, "0")}`;
       const date = document.createElement("span");
       date.textContent = item.date;
       top.append(number, date);

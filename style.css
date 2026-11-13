@@ -1462,3 +1462,38 @@ html {
     transform: none !important;
   }
 }
+
+/* Academic desktop project: an icon placeholder, not an application screenshot. */
+.visual-property {
+  background: radial-gradient(circle at center, #294638, #121e1a);
+}
+.property-placeholder {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+  height: 153px;
+  color: #bdf180;
+}
+.property-placeholder svg {
+  width: 72px;
+  height: 72px;
+}
+.property-placeholder > span {
+  font-size: 8px;
+  letter-spacing: 0.17em;
+  color: #a5c1ab;
+}
+.project-highlights {
+  margin: 4px 0 0;
+  padding-left: 17px;
+  color: #9baaa7;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.project-highlights li + li {
+  margin-top: 5px;
+}
+.project-highlights li::marker {
+  color: #bdf180;
+}
