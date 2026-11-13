@@ -1273,3 +1273,192 @@ html {
     animation: none;
   }
 }
+
+/* Opportunity cards appear above the contact badge without moving the layout. */
+.opportunities {
+  position: relative;
+  z-index: 4;
+}
+.opportunities-toggle {
+  width: 100%;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.opportunities-toggle > span {
+  transition: transform 0.45s;
+}
+.opportunities-toggle small {
+  display: block;
+  margin-top: 12px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+.opportunities-toggle small span {
+  float: none;
+  font-size: 14px;
+}
+.opportunities.is-open .opportunities-toggle {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px #bdf28020;
+}
+.opportunities.is-open .opportunities-toggle > span {
+  transform: rotate(90deg);
+}
+.opportunities-panel {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  right: 0;
+  width: min(360px, calc(100vw - 44px));
+  padding: 20px;
+  background: linear-gradient(145deg, #1b2c24, #0e1715);
+  border: 1px solid #bdf28045;
+  border-radius: 12px;
+  box-shadow: 0 24px 70px #0009;
+  transform-origin: bottom right;
+}
+.opportunities-panel::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 18px;
+}
+.opportunities-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.opportunities-heading h3 {
+  margin: 0;
+  font:
+    500 17px "Space Grotesk",
+    sans-serif;
+  letter-spacing: -0.03em;
+}
+.opportunities-close {
+  margin-left: auto;
+  border: 1px solid #ffffff20;
+  border-radius: 50%;
+  background: #ffffff06;
+  color: #c1f582;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.opportunities-panel > p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 12px 0 16px;
+}
+.opportunity-role {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 10px;
+  margin-top: 8px;
+  border: 1px solid #ffffff14;
+  border-radius: 7px;
+  background: #ffffff04;
+  transition:
+    transform 0.2s,
+    background 0.2s,
+    border-color 0.2s;
+}
+.opportunity-role:hover,
+.opportunity-role:focus-visible {
+  transform: translateX(3px);
+  background: #bdf2800c;
+  border-color: #bdf28065;
+}
+.role-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  height: 34px;
+  color: #c1f582;
+  font-size: 22px;
+}
+.opportunity-role strong {
+  display: block;
+  color: #edf5eb;
+  font-size: 12px;
+  font-weight: 500;
+}
+.opportunity-role small {
+  display: block;
+  margin-top: 4px;
+  color: #9aafa1;
+  font-size: 10px;
+}
+.role-arrow {
+  margin-left: auto;
+  color: #c1f582;
+  transition: transform 0.2s;
+}
+.opportunity-role:hover .role-arrow {
+  transform: translate(2px, -2px);
+}
+.opportunities-note {
+  display: block;
+  color: #8fa496;
+  font-size: 10px;
+  line-height: 1.6;
+  margin-top: 15px;
+}
+.opportunities.is-open .opportunities-panel {
+  animation: opportunity-pop 0.28s ease-out both;
+}
+.opportunities.is-open .opportunity-role {
+  animation: opportunity-enter 0.35s ease-out both;
+}
+.opportunities.is-open .opportunity-role:nth-of-type(2) {
+  animation-delay: 0.06s;
+}
+.opportunities.is-open .opportunity-role:nth-of-type(3) {
+  animation-delay: 0.12s;
+}
+@keyframes opportunity-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes opportunity-enter {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (max-width: 560px) {
+  .opportunities-panel {
+    left: 0;
+    right: auto;
+    transform-origin: bottom left;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opportunities *,
+  .opportunities.is-open .opportunities-toggle,
+  .opportunity-role:hover,
+  .opportunity-role:focus-visible,
+  .opportunity-role:hover .role-arrow {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

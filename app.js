@@ -457,3 +457,62 @@ if (window.location.protocol === "file:") {
 // Render saved entries after project controls have been initialised.
 
 render();
+
+// Hover previews roles; click, keyboard and touch can also open the panel.
+const opportunities = document.querySelector(".opportunities");
+const opportunitiesToggle = opportunities.querySelector(
+  ".opportunities-toggle",
+);
+const opportunitiesPanel = opportunities.querySelector(".opportunities-panel");
+let opportunityCloseTimer;
+function setOpportunitiesOpen(open) {
+  clearTimeout(opportunityCloseTimer);
+  opportunitiesToggle.setAttribute("aria-expanded", String(open));
+  opportunitiesPanel.hidden = !open;
+  opportunities.classList.toggle("is-open", open);
+}
+opportunities.addEventListener("pointerenter", (event) => {
+  if (event.pointerType === "mouse") setOpportunitiesOpen(true);
+});
+opportunities.addEventListener("pointerleave", (event) => {
+  if (
+    event.pointerType === "mouse" &&
+    !opportunities.contains(document.activeElement)
+  ) {
+    opportunityCloseTimer = setTimeout(() => setOpportunitiesOpen(false), 180);
+  }
+});
+opportunitiesToggle.addEventListener("click", () => {
+  setOpportunitiesOpen(
+    opportunitiesToggle.getAttribute("aria-expanded") !== "true",
+  );
+});
+opportunitiesToggle.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    setOpportunitiesOpen(true);
+    opportunitiesPanel.querySelector("a").focus();
+  }
+});
+opportunities.addEventListener("focusin", () =>
+  clearTimeout(opportunityCloseTimer),
+);
+opportunities.addEventListener("focusout", (event) => {
+  if (!opportunities.contains(event.relatedTarget)) setOpportunitiesOpen(false);
+});
+opportunities
+  .querySelector(".opportunities-close")
+  .addEventListener("click", () => {
+    setOpportunitiesOpen(false);
+    opportunitiesToggle.focus();
+  });
+opportunities.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    setOpportunitiesOpen(false);
+    opportunitiesToggle.focus();
+  }
+});
+document.addEventListener("pointerdown", (event) => {
+  if (!opportunities.contains(event.target)) setOpportunitiesOpen(false);
+});
